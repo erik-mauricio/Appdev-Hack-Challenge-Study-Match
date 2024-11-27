@@ -8,6 +8,7 @@ User_Rates = db.Table(
                     db.Column("rate_id", db.Integer, db.ForeignKey("rates.id"))
                     )
 
+
 Group_Rates = db.Table(
                     "group_rates", db.Model.metadata,
                     db.Column("group_id", db.Integer, db.ForeignKey("groups.id")),
@@ -45,6 +46,7 @@ class Group(db.Model):
             "tasks": [t.serialize() for t in self.tasks],
             "rates": [r.serialize() for r in self.rates]
                }
+
 
     def simple_serialize(self):
         """
@@ -130,6 +132,7 @@ class Rate(db.Model):
                 "stars": self.stars,
                 }
 
+
 class Task(db.Model):
     """
     Task Model
@@ -163,6 +166,7 @@ class Task(db.Model):
                 "task_description": self.description,
                 "due_date": self.due_date
                 }
+
 
 class Post(db.Model):
     """

@@ -2,7 +2,7 @@ import json
 import os
 from db import db
 from flask import Flask, request
-from db import Group, User, Rate
+from db import Group, User, Rate, Task, Post, Comment
 
 app = Flask(__name__)
 db_filename = "StudentMatch.db"
