@@ -2,14 +2,16 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-Rating_To_Student = db.Table(
-                    "student_ratings", db.Model.metadata,
-                    db.Column("user_id", db.Integer, db.ForeignKey("users.id"))
+User_Rates = db.Table(
+                    "student_rates", db.Model.metadata,
+                    db.Column("user_id", db.Integer, db.ForeignKey("users.id")),
+                    db.Column("rate_id", db.Integer, db.ForeignKey("rates.id"))
                     )
 
-Rating_To_Group = db.Table(
-                    "group_ratings", db.Model.metadata,
-                    db.Column("group_id", db.Integer, db.ForeignKey("groups.id"))
+Group_Rates = db.Table(
+                    "group_rates", db.Model.metadata,
+                    db.Column("group_id", db.Integer, db.ForeignKey("groups.id")),
+                    db.Column("rate_id", db.Integer, db.ForeignKey("rates.id"))
                     )
 
 class User(db.Model):
@@ -20,8 +22,9 @@ class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
-    netid = db.Column(db.Integer, nullable=False)
-    group_id = db.Column(db.Integer, db.ForeignKey("groups.id"), nullable=False)
+    netid = db.Column(db.String, nullable=False)
+    group_id = db.Column(db.Integer, db.ForeignKey("groups.id"), nullable=True)
+    rates = db.relationship("Rate", secondary=User_Rates, back_populates="users")
 
     def __init__(self, **kwargs):
         """
@@ -39,7 +42,8 @@ class User(db.Model):
         return {
                 "id": self.id,
                 "name": self.name,
-                "netid": self.netid
+                "netid": self.netid,
+                "rates": [r.serialize() for r in self.rates]
                 }
 
     def simple_serialize(self):
@@ -63,13 +67,13 @@ class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     users = db.relationship("User", cascade="delete")
+    rates = db.relationship("Rate", secondary=Group_Rates, back_populates="groups")
 
     def __init__(self, **kwargs):
         """
         Initializes group object/entry
         """
         self.name= kwargs.get("name")
-        self.users = kwargs.get("users")
    
     def serialize(self):
         """
@@ -79,7 +83,8 @@ class Group(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "users": [u.serialize() for u in self.users]
+            "users": [u.serialize() for u in self.users],
+            "rates": [r.serialize() for r in self.rates]
                }
 
     def simple_serialize(self):
@@ -93,10 +98,15 @@ class Group(db.Model):
                 }
 
 class Rate(db.Model):
+    """
+    Rate Model
+    """
 
-    __tablename__ = "rating"
+    __tablename__ = "rates"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     stars = db.Column(db.Integer, nullable=False)
+    users = db.relationship("User", secondary=User_Rates, back_populates='rates')
+    groups = db.relationship("Group", secondary=Group_Rates, back_populates='rates')
 
 
     def __init__(self, **kwargs):

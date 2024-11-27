@@ -23,5 +23,6 @@ def success_response(data, code=200):
 def failure_response(message, code=404):
     return json.dumps({"error": message}), code
 
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
