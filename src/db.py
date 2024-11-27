@@ -130,17 +130,6 @@ class Rate(db.Model):
                 "stars": self.stars,
                 }
 
-    def simple_serialize(self):
-        """
-        Simple Serializes a rate object
-        """
-
-        return {
-                "id": self.id,
-                "stars": self.stars,
-                }
-
-
 class Task(db.Model):
     """
     Task Model
@@ -150,8 +139,8 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     task_name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
-    due_date = db.Column(db.Integer, nullable=False)
-    group_id = db.Column(db.Integer, db.ForeignKey("groups.id"), nullable=False)
+    due_date = db.Column(db.String, nullable=False)
+    comments = db.Column(db.Integer, db.ForeignKey("groups.id"), nullable=False)
 
 
     def __init__(self, **kwargs):
@@ -174,3 +163,71 @@ class Task(db.Model):
                 "task_description": self.description,
                 "due_date": self.due_date
                 }
+
+class Post(db.Model):
+    """
+    Post Model
+    """
+
+    __tablename__ = "posts"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    post_name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
+    timestamp = db.Column(db.String, nullable=False)
+    comments = db.relationship("Comment", cascade="delete")
+
+
+    def __init__(self, **kwargs):
+        """
+        Initializes a post object
+        """
+
+        self.post_name = kwargs.get("post_name")
+        self.description = kwargs.get("description")
+        self.timestamp = kwargs.get("timestamp")
+
+    def serialize(self):
+        """
+        Serializes post object
+        """
+
+        return {
+                "id": self.id,
+                "post_name": self.post_name,
+                "task_description": self.description,
+                "timestamp": self.timestamp,
+                "comments": [c.serialize() for c in self.comments]
+                }
+
+
+class Comment(db.Model):
+    """
+    Commment Model
+    """
+
+    __tablename__ = "comments"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    description = db.Column(db.String, nullable=False)
+    timestamp = db.Column(db.String, nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
+
+
+    def __init__(self, **kwargs):
+        """
+        Initializes a comment object
+        """
+
+        self.description = kwargs.get("description")
+        self.timestamp = kwargs.get("timestamp")  
+
+    def serialize(self):
+        """
+        Serializes a comment object
+        """
+
+        return {
+                "id": self.id,
+                "task_description": self.description,
+                "timestamp": self.timestamp
+                }  
+    
