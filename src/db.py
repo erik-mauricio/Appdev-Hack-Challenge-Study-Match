@@ -14,6 +14,49 @@ Group_Rates = db.Table(
                     db.Column("rate_id", db.Integer, db.ForeignKey("rates.id"))
                     )
 
+    
+class Group(db.Model):
+    """
+    Group Model
+    """
+
+    __tablename__ = "groups"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String, nullable=False)
+    users = db.relationship("User", cascade="delete")
+    tasks = db.relationship("Task", cascade="delete")
+    rates = db.relationship("Rate", secondary=Group_Rates, back_populates="groups")
+
+    def __init__(self, **kwargs):
+        """
+        Initializes group object/entry
+        """
+        self.name= kwargs.get("name")
+   
+    def serialize(self):
+        """
+        Serializes a group object
+        """
+    
+        return {
+            "id": self.id,
+            "name": self.name,
+            "users": [u.serialize() for u in self.users],
+            "tasks": [t.serialize() for t in self.tasks],
+            "rates": [r.serialize() for r in self.rates]
+               }
+
+    def simple_serialize(self):
+        """
+        Simple serializes a group object
+        """
+
+        return {
+                "id": self.id,
+                "name": self.name
+                }
+
+
 class User(db.Model):
     """
     User Model 
@@ -56,46 +99,7 @@ class User(db.Model):
                 "name": self.name,
                 "netid": self.netid,
                 }
-    
 
-class Group(db.Model):
-    """
-    Group Model
-    """
-
-    __tablename__ = "groups"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String, nullable=False)
-    users = db.relationship("User", cascade="delete")
-    rates = db.relationship("Rate", secondary=Group_Rates, back_populates="groups")
-
-    def __init__(self, **kwargs):
-        """
-        Initializes group object/entry
-        """
-        self.name= kwargs.get("name")
-   
-    def serialize(self):
-        """
-        Serializes a group object
-        """
-    
-        return {
-            "id": self.id,
-            "name": self.name,
-            "users": [u.serialize() for u in self.users],
-            "rates": [r.serialize() for r in self.rates]
-               }
-
-    def simple_serialize(self):
-        """
-        Simple serializes a group object
-        """
-
-        return {
-                "id": self.id,
-                "name": self.name
-                }
 
 class Rate(db.Model):
     """
@@ -134,4 +138,39 @@ class Rate(db.Model):
         return {
                 "id": self.id,
                 "stars": self.stars,
+                }
+
+
+class Task(db.Model):
+    """
+    Task Model
+    """
+
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    task_name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
+    due_date = db.Column(db.Integer, nullable=False)
+    group_id = db.Column(db.Integer, db.ForeignKey("groups.id"), nullable=False)
+
+
+    def __init__(self, **kwargs):
+        """
+        Initializes an task object
+        """
+
+        self.task_name = kwargs.get("task_name")
+        self.description = kwargs.get("description")
+        self.due_date = kwargs.get("due_date")
+
+    def serialize(self):
+        """
+        Serializes task object
+        """
+
+        return {
+                "id": self.id,
+                "task_name": self.name,
+                "task_description": self.description,
+                "due_date": self.due_date
                 }
