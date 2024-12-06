@@ -2,7 +2,7 @@ import json
 import os
 from db import db
 from flask import Flask, request
-from db import Group, User, Rate, Task, Post, Comment
+from db import Group, User, Task, Post, Comment
 
 app = Flask(__name__)
 db_filename = "StudentMatch.db"
@@ -144,7 +144,7 @@ def create_task(group_id):
         task_name=body["task_name"],
         description=body["description"],
         due_date=body["due_date"],
-        comments=group_id,
+        group_id=group_id,
     )
     group.tasks.append(task)
     db.session.add(task)
@@ -162,7 +162,7 @@ def update_task(task_id):
     task = Task.query.filter_by(id=task_id).first()
     if task is None:
         return failure_response("Task not found", 404)
-    group = Group.query.filter_by(id=task.comments).first()
+    group = Group.query.filter_by(id=task.group_id).first()
     group.tasks.remove(task)
     if "task_name" in body:
         task.task_name = body["task_name"]
@@ -194,7 +194,7 @@ def delete_specific_task(task_id):
     task = Task.query.filter_by(id=task_id).first()
     if task is None:
         return failure_response("Task not found", 404)
-    group = Group.query.filter_by(id=task.comments).first()
+    group = Group.query.filter_by(id=task.group_id).first()
     group.tasks.remove(task)
     db.session.delete(task)
     db.session.commit()
