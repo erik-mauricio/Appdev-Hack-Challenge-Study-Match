@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  pa5:
+    image: backend/StudyMatch:v.1.0.0
+    ports:
+      - "8000:8000"
