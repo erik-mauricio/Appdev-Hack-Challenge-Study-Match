@@ -42,9 +42,9 @@ class Group(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "users": [u.serialize() for u in self.users],
-            "tasks": [t.serialize() for t in self.tasks],
-            "rates": [r.serialize() for r in self.rates]
+            "users": [user.serialize() for user in self.users],
+            "tasks": [task.serialize() for task in self.tasks],
+            "rates": [rate.serialize() for rate in self.rates]
                }
 
 
@@ -88,6 +88,7 @@ class User(db.Model):
                 "id": self.id,
                 "name": self.name,
                 "netid": self.netid,
+                "group_id": self.group_id,
                 "rates": [r.serialize() for r in self.rates]
                 }
 
@@ -231,7 +232,19 @@ class Comment(db.Model):
 
         return {
                 "id": self.id,
-                "task_description": self.description,
+                "comment_description": self.description,
                 "timestamp": self.timestamp
-                }  
+                }
+    
+    def serialize_with_post(self):
+        """
+        Serializes a comment object with post id
+        """
+
+        return {
+                "id": self.id,
+                "comment_description": self.description,
+                "timestamp": self.timestamp,
+                "post_id": self.post_id
+                }
     
