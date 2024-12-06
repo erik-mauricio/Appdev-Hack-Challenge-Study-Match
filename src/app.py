@@ -32,6 +32,10 @@ def failure_response(message, code=404):
 
 @app.route("/users/", methods=["POST"])
 def create_user():
+    """
+    Endpoint to create a user
+    """
+
     body = json.loads(request.data)
     if "name" not in body:
         return failure_response("User name is required", 400)
@@ -45,6 +49,10 @@ def create_user():
 
 @app.route("/users/<int:user_id>/", methods=["PUT"])
 def assign_user_to_group(user_id):
+    """
+    Endpoint to assign a user to a group
+    """
+
     body = json.loads(request.data)
     if "group_id" not in body:
         return failure_response("Group id is required", 400)
@@ -62,12 +70,20 @@ def assign_user_to_group(user_id):
 
 @app.route("/users/", methods=["GET"])
 def get_users():
+    """
+    Endpoint to get all users
+    """
+
     users = [user.serialize() for user in User.query.all()]
     return success_response({"users": users}, 200)
 
 
 @app.route("/users/<int:user_id>/", methods=["GET"])
 def get_user(user_id):
+    """
+    Endpoint to get all user by id
+    """
+
     user = User.query.filter_by(id=user_id).first()
     if user is None:
         return failure_response("User not found", 404)
@@ -76,6 +92,10 @@ def get_user(user_id):
 
 @app.route("/users/<int:user_id>/", methods=["DELETE"])
 def delete_user(user_id):
+    """
+    Endpoint to get delete user by id
+    """
+
     user = User.query.filter_by(id=user_id).first()
     if user is None:
         return failure_response("User not found", 404)
@@ -92,6 +112,10 @@ def delete_user(user_id):
 
 @app.route("/groups/", methods=["POST"])
 def create_group():
+    """
+    Endpoint to get create group
+    """
+
     body = json.loads(request.data)
     if "name" not in body:
         return failure_response("Group name is required", 400)
@@ -103,12 +127,20 @@ def create_group():
 
 @app.route("/groups/", methods=["GET"])
 def get_groups():
+    """
+    Endpoint to get all groups
+    """
+
     groups = [group.serialize() for group in Group.query.all()]
     return success_response({"groups": groups}, 200)
 
 
 @app.route("/groups/<int:group_id>/", methods=["GET"])
 def get_group(group_id):
+    """
+    Endpoint to get all a group by id
+    """
+
     group = Group.query.filter_by(id=group_id).first()
     if group is None:
         return failure_response("Group not found", 404)
@@ -117,6 +149,10 @@ def get_group(group_id):
 
 @app.route("/groups/<int:group_id>/", methods=["DELETE"])
 def delete_group(group_id):
+    """
+    Endpoint to delete a group by id
+    """
+
     group = Group.query.filter_by(id=group_id).first()
     if group is None:
         return failure_response("Group not found", 404)
@@ -130,6 +166,10 @@ def delete_group(group_id):
 
 @app.route("/groups/<int:group_id>/tasks/", methods=["POST"])
 def create_task(group_id):
+    """
+    Endpoint to create a task
+    """
+
     body = json.loads(request.data)
     if "task_name" not in body:
         return failure_response("Task name is required", 400)
@@ -154,6 +194,10 @@ def create_task(group_id):
 
 @app.route("/tasks/<int:task_id>/", methods=["PUT"])
 def update_task(task_id):
+    """
+    Endpoint to update a task
+    """
+
     body = json.loads(request.data)
     if "task_name" not in body and "description" not in body and "due_date" not in body:
         return failure_response(
@@ -177,12 +221,20 @@ def update_task(task_id):
 
 @app.route("/tasks/", methods=["GET"])
 def get_all_tasks():
+    """
+    Endpoint to get all tasks
+    """
+
     tasks = [task.serialize() for task in Task.query.all()]
     return success_response({"tasks": tasks}, 200)
 
 
 @app.route("/tasks/<int:task_id>/", methods=["GET"])
 def get_specific_task(task_id):
+    """
+    Endpoint to get all task by specific id
+    """
+
     task = Task.query.filter_by(id=task_id).first()
     if task is None:
         return failure_response("Task not found", 404)
@@ -191,6 +243,10 @@ def get_specific_task(task_id):
 
 @app.route("/tasks/<int:task_id>/", methods=["DELETE"])
 def delete_specific_task(task_id):
+    """
+    Endpoint to delete all task by specific id
+    """
+
     task = Task.query.filter_by(id=task_id).first()
     if task is None:
         return failure_response("Task not found", 404)
@@ -206,6 +262,10 @@ def delete_specific_task(task_id):
 
 @app.route("/posts/", methods=["POST"])
 def create_post():
+    """
+    Endpoint to create post
+    """
+    
     body = json.loads(request.data)
     if "post_name" not in body:
         return failure_response("Post name is required", 400)
@@ -225,12 +285,19 @@ def create_post():
 
 @app.route("/posts/", methods=["GET"])
 def get_posts():
+    """
+    Endpoint to get all posts
+    """
     posts = [post.serialize() for post in Post.query.all()]
     return success_response({"posts": posts}, 200)
 
 
 @app.route("/posts/<int:post_id>/", methods=["GET"])
 def get_post(post_id):
+    """
+    Endpoint to get post 
+    """
+
     post = Post.query.filter_by(id=post_id).first()
     if post is None:
         return failure_response("Post not found", 404)
@@ -239,6 +306,10 @@ def get_post(post_id):
 
 @app.route("/posts/<int:post_id>/", methods=["DELETE"])
 def delete_post(post_id):
+    """
+    Endpoint to delete post by id
+    """
+
     post = Post.query.filter_by(id=post_id).first()
     if post is None:
         return failure_response("Post not found", 404)
@@ -252,6 +323,10 @@ def delete_post(post_id):
 
 @app.route("/posts/<int:post_id>/comments/", methods=["POST"])
 def create_comment(post_id):
+    """
+    Endpoint to create comment
+    """
+
     body = json.loads(request.data)
     if "description" not in body:
         return failure_response("Comment description is required", 400)
@@ -271,6 +346,10 @@ def create_comment(post_id):
 
 @app.route("/comments/<int:comment_id>/", methods=["PUT"])
 def update_comment(comment_id):
+    """
+    Endpoint to update comment
+    """
+
     body = json.loads(request.data)
     if "description" not in body:
         return failure_response("Comment description is required", 400)
@@ -290,12 +369,20 @@ def update_comment(comment_id):
 
 @app.route("/comments/", methods=["GET"])
 def get_all_comments():
+    """
+    Endpoint to get all comments
+    """
+
     comments = [comment.serialize_with_post() for comment in Comment.query.all()]
     return success_response({"comments": comments}, 200)
 
 
 @app.route("/comments/<int:comment_id>/", methods=["GET"])
 def get_specific_comment(comment_id):
+    """
+    Endpoint to get all comment by id
+    """
+
     comment = Comment.query.filter_by(id=comment_id).first()
     if comment is None:
         return failure_response("Comment not found", 404)
@@ -304,6 +391,10 @@ def get_specific_comment(comment_id):
 
 @app.route("/comments/<int:comment_id>/", methods=["DELETE"])
 def delete_specific_comment(comment_id):
+    """
+    Endpoint to delete comment by id
+    """
+
     comment = Comment.query.filter_by(id=comment_id).first()
     if comment is None:
         return failure_response("Comment not found", 404)
