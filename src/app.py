@@ -156,6 +156,8 @@ def delete_group(group_id):
     group = Group.query.filter_by(id=group_id).first()
     if group is None:
         return failure_response("Group not found", 404)
+    for user in group.users:
+        user.group_id = None
     db.session.delete(group)
     db.session.commit()
     return success_response(group.serialize(), 200)

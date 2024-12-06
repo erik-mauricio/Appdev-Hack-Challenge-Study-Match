@@ -11,7 +11,7 @@ class Group(db.Model):
     __tablename__ = "groups"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
-    users = db.relationship("User", cascade="delete")
+    users = db.relationship("User")
     tasks = db.relationship("Task", cascade="delete")
 
     def __init__(self, **kwargs):
@@ -88,7 +88,7 @@ class Task(db.Model):
     Task Model
     """
 
-    __tablename__ = "users"
+    __tablename__ = "tasks"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     task_name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
@@ -147,7 +147,7 @@ class Post(db.Model):
         return {
             "id": self.id,
             "post_name": self.post_name,
-            "task_description": self.description,
+            "post_description": self.description,
             "timestamp": self.timestamp,
             "comments": [comment.serialize() for comment in self.comments],
         }
