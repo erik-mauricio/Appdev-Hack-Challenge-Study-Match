@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  studymatch:
+    image: erikmauricio/studymatch:v.1.0.23
+    volumes:
+      - /home/em882/src/StudentMatch.db:/usr/app/StudentMatch.db
+    ports:
+      - "80:8000"
+
